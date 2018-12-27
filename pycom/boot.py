@@ -2,6 +2,11 @@
 from machine import UART
 from machine import RTC
 from machine import Pin
+#
+# The mywifi.py file contains two variables, and looks a bit like this:
+# ssid = "MYSSID"
+# pwd  = "ThePassWordForMyWifiNetwork"
+#
 import mywifi
 
 uart = UART(0, 115200)
