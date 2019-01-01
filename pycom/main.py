@@ -83,6 +83,7 @@ def _httpHandlerDoorGet(httpClient, httpResponse) :
 @MicroWebSrv.route('/close', 'POST')
 def _httpHandlerClosePost(httpClient, httpResponse) :
     formData  = httpClient.ReadRequestPostedFormData()
+    door.close()
     content   = """\
     <!DOCTYPE html>
     <html lang=en>
@@ -103,6 +104,7 @@ def _httpHandlerClosePost(httpClient, httpResponse) :
 @MicroWebSrv.route('/open', 'POST')
 def _httpHandlerOpenPost(httpClient, httpResponse) :
     formData  = httpClient.ReadRequestPostedFormData()
+    door.open()
     content   = """\
     <!DOCTYPE html>
     <html lang=en>

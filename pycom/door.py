@@ -3,15 +3,17 @@ import time
 from machine import Pin
 import henhouse_status as hhstat
 
-def opendoor():
+def open():
   print("Opening Door")
+  hhstat.setdoor('Open')
   openpin = Pin('P23', Pin.OUT)
   openpin.value(1)
   time.sleep_ms(50)
   openpin.value(0)
 
-def closedoor():
+def close():
   print("Closing Door")
+  hhstat.setdoor('Closed')
   closepin = Pin('P22', Pin.OUT)
   closepin.value(1)
   time.sleep_ms(50)
@@ -27,7 +29,7 @@ def handler(now):
 
 
     if((hour == openHour) and (minutes == openMin)):
-        door.opendoor()
+        door.open()
 
     if((hour == closeHour) and (minutes == closeMin)):
-        door.closedoor()
+        door.close()
