@@ -46,7 +46,7 @@ def setdoor(stat):
     '''
     Stores the new status of the door, given that the status i either 'Open' or 'Closed'
     '''
-    if(stat == 'Open' or stat == 'Close'):
+    if(stat == 'Open' or stat == 'Closed'):
         (ontime, offtime, status) = get()
         set(ontime, offtime, stat)
 

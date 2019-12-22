@@ -8,30 +8,11 @@ import time
 import door
 from machine import RTC
 
-# ----------------------------------------------------------------------------
-
-def timerevent(alarm):
-    pycom.rgbled(0x0f00)
-    time.sleep_ms(10)
-    pycom.rgbled(0)
-    door.handler(time.localtime())
-'''
-    now=rtc.now()
-    print(now)
-
-    ### NB! UTC time!
-    if((now[3] == 6) & (now[4] == 15)):
-        door.opendoor()
-        while(rtc.now()[4] == 0):
-            pass
-    if((now[3] == 20) & (now[4] == 0)):
-        door.closedoor()
-        while(rtc.now()[4] == 0):
-            pass
-'''
 
 def doorcontent():
     (ontime, closetime, status) = hhstat.get()
+    now = time.localtime()
+    timetxt = hhstat.time2txt(now[3], now[4])
     content = """\
     <!DOCTYPE html>
     <html lang=en>
@@ -66,9 +47,10 @@ def doorcontent():
                     <input type="submit" value="Oppdater tidspunkt">
             </td></tr>
                 </form>
+                <h2>Time: %s</h2>
         </body>
     </html>
-    """ % (hhstat.dor(), ontime, closetime)
+    """ % (hhstat.dor(), ontime, closetime, timetxt)
     return(content)
 
 @MicroWebSrv.route('/door')
@@ -104,7 +86,7 @@ def _httpHandlerClosePost(httpClient, httpResponse) :
 @MicroWebSrv.route('/open', 'POST')
 def _httpHandlerOpenPost(httpClient, httpResponse) :
     formData  = httpClient.ReadRequestPostedFormData()
-    door.open()
+    door.dopen()
     content   = """\
     <!DOCTYPE html>
     <html lang=en>
@@ -159,21 +141,10 @@ def _closedCallback(webSocket) :
 pycom.heartbeat(False)
 rtc=RTC()
 time.timezone(3600) # Winter time.
-alarm = Timer.Alarm(timerevent, 30, periodic=True)
-
-# ----------------------------------------------------------------------------
-
-#routeHandlers = [
-#	( "/test",	"GET",	_httpHandlerTestGet ),
-#	( "/test",	"POST",	_httpHandlerTestPost )
-#]
-
+alarm = Timer.Alarm(door.timerevent, 30, periodic=True)
 
 srv = MicroWebSrv(webPath='www/')
 srv.MaxWebSocketRecvLen     = 256
 srv.WebSocketThreaded		= True
 srv.AcceptWebSocketCallback = _acceptWebSocketCallback
 srv.Start()
-
-
-# ----------------------------------------------------------------------------
