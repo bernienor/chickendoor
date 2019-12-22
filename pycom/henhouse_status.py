@@ -13,20 +13,30 @@
 
 def get():
     f = open("henhousestatus.txt", 'r')
-    openingtime = f.readline().strip('\n')
-    closingtime = f.readline().strip('\n')
-    status = f.readline().strip('\n')
+    openingtime1 = f.readline().strip('\n')
+    closingtime1 = f.readline().strip('\n')
+    status1 = f.readline().strip('\n')
+    openingtime2 = f.readline().strip('\n')
+    closingtime2 = f.readline().strip('\n')
+    status2 = f.readline().strip('\n')
     f.close()
-    return(openingtime, closingtime, status)
+    return(openingtime1, closingtime1, status1, openingtime2, closingtime2, status2)
 
 
-def set(openingtime, closingtime, status):
+
+def set(openingtime1, closingtime1, status1, openingtime2, closingtime2, status2):
     f = open("henhousestatus.txt", 'w')
-    f.write(openingtime)
+    f.write(openingtime1)
     f.write('\n')
-    f.write(closingtime)
+    f.write(closingtime1)
     f.write('\n')
-    f.write(status)
+    f.write(status1)
+    f.write('\n')
+    f.write(openingtime2)
+    f.write('\n')
+    f.write(closingtime2)
+    f.write('\n')
+    f.write(status2)
     f.write('\n')
     f.close()
 
@@ -41,27 +51,46 @@ def dor():
         return('Lukket')
     return('Ukjent')
 
+'''
+Returns the stored status of the door in Norwegian
+'''
+def dor2():
+    if(get()[5] == 'Open'):
+        return('&Aring;pen')
+    if(get()[5] == 'Closed'):
+        return('Lukket')
+    return('Ukjent')
 
-def setdoor(stat):
+def setdoor1(stat):
     '''
     Stores the new status of the door, given that the status i either 'Open' or 'Closed'
     '''
     if(stat == 'Open' or stat == 'Closed'):
-        (ontime, offtime, status) = get()
-        set(ontime, offtime, stat)
+        (ontime, offtime, status , a, b, c) = get()
+        set(ontime, offtime, stat, a, b, c)
 
+def setdoor2(stat):
+    '''
+    Stores the new status of the door, given that the status i either 'Open' or 'Closed'
+    '''
+    if(stat == 'Open' or stat == 'Closed'):
+        (a, b, c, ontime, offtime, status) = get()
+        set(a, b, c, ontime, offtime, stat)
 
-def updatetime(webuptime, webdowntime):
+def updatetime(webuptime, webdowntime,webuptime2, webdowntime2):
     '''
     Updates the time as sendt from the web-form. NB! Notice the reformating. This
     ensures clean entries to the statusfile.
     '''
-    (u,c,status) = get()
+    (u,c,status, u2,c2,status2) = get()
     try:
-        uptime   = time2txt(txt2time(webuptime)[0], txt2time(webuptime)[1])
-        downtime = time2txt(txt2time(webdowntime)[0], txt2time(webdowntime)[1])
+        uptime    = time2txt(txt2time(webuptime)[0], txt2time(webuptime)[1])
+        downtime  = time2txt(txt2time(webdowntime)[0], txt2time(webdowntime)[1])
+        uptime2   = time2txt(txt2time(webuptime2)[0], txt2time(webuptime2)[1])
+        downtime2 = time2txt(txt2time(webdowntime2)[0], txt2time(webdowntime2)[1])
+        #print(uptime, downtime, uptime2, downtime2)
         if((uptime != None) and (downtime != None)):
-            set(uptime, downtime, status)
+            set(uptime, downtime, status, uptime2, downtime2, status2)
     except:
         pass
 
